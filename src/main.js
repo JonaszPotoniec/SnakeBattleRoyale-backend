@@ -35,12 +35,6 @@ for(let x = 0; x < mapSize; x++){
         point.y = spawnPoints[random].y;
         spawnPoints[random].x = temp.x;
         spawnPoints[random].y = temp.y;
-
-        /*
-        let temp;
-        temp = point;
-        point = spawnPoints[random];
-        spawnPoints[random] = temp;*/
     })
 }
 
@@ -48,8 +42,8 @@ io.on('connection', (socket) => {
 	console.log("Player connected");
 	let name = "Default";
 	let in_game = false;
-  let playerId;
-  let playerObject;
+	let playerId;
+ 	let playerObject;
 
 	socket.on("name", (msg) => {
         if(msg.name !=  "")
@@ -104,7 +98,7 @@ io.on('connection', (socket) => {
                     }
                 });
             }
-		}
+	}
 
         if(playerId === 1 && !gameStarted){
             countdownStart = Date.now();
@@ -113,8 +107,6 @@ io.on('connection', (socket) => {
         }
 	});
 
-
-	//socket.emit("map", {map});
     emitOptimisedMap();
 	socket.emit("player_list", {players: players.map((x) => {return x.name})})
 	socket.emit("mapInfo", {size: mapSize})
@@ -208,8 +200,6 @@ function drawMapAndSend(){
 
     updateMap(newMap);
     emitOptimisedMap();
-
-    //io.sockets.emit("map", {map});
 }
 
 function emitOptimisedMap(){
@@ -287,42 +277,26 @@ function updateMap(newMap){ //return if players are updated
                     // kill  TODO: add animation (?)
                     for(let z = newMap[x][y].length - 1; z >= 0; z--){
                         if(newMap[x][y][z] != undefined)
-						if(newMap[x][y][z] > -1)
-                            if(x == players[newMap[x][y][z]].head.x && y == players[newMap[x][y][z]].head.y){
-                                //players.splice(newMap[x][y][z], 1); //TODO there is room for optimization  SET AS DEAD INSTEAD OF DELETING
-                                players[newMap[x][y][z]].alive = false;
-                                playerNumberChanged = true;
-                            } else {
-								map[x][y] = newMap[x][y][z];
-							}
+				if(newMap[x][y][z] > -1)
+					if(x == players[newMap[x][y][z]].head.x && y == players[newMap[x][y][z]].head.y){
+						players[newMap[x][y][z]].alive = false;
+						playerNumberChanged = true;
+					} else {
+						map[x][y] = newMap[x][y][z];
+					}
                     }
-                    /*
-                    newMap[x][y].map((player) => {
-
-                        if(players[player] != undefined)  //TODO fix and test
-                            if(x == players[player].head.x && y == players[player].head.y){
-                                players.splice(player, 1);
-                            }
-                    })*/
                 }
             } else {
-                for(let z = newMap[x][y].length - 1; z >= 0; z--){	//console.log("2-"+z+":");console.log(newMap[x][y]);
+                for(let z = newMap[x][y].length - 1; z >= 0; z--){
                     if(newMap[x][y][z] != undefined)
-					if(newMap[x][y][z] > -1)
-                        if(x == players[newMap[x][y][z]].head.x && y == players[newMap[x][y][z]].head.y){
-                            //players.splice(newMap[x][y][z], 1); //TODO there is room for optimization
-                            players[newMap[x][y][z]].alive = false;
-                            playerNumberChanged = true;
-                        } else {
-							map[x][y] = newMap[x][y][z];
-						}
+			if(newMap[x][y][z] > -1)
+				if(x == players[newMap[x][y][z]].head.x && y == players[newMap[x][y][z]].head.y){
+				    players[newMap[x][y][z]].alive = false;
+				    playerNumberChanged = true;
+				} else {
+					map[x][y] = newMap[x][y][z];
+				}
                 }
-                    /*
-                newMap[x][y].map((player) => {
-                    if(x == players[player].head.x && y == players[player].head.y){
-                        players.splice(player, 1);
-                    }
-                })*/
             }
         }
 
